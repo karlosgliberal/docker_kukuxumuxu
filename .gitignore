@@ -1,0 +1,17 @@
+data/
+.DS_Store
+*.sw[mnpcod]
+*.log
+*.tmp
+*.tmp.*
+log.txt
+framework.sublime-project
+framework.sublime-workspace
+UserInterfaceState.xcuserstate
+*.sublime-project
+*.sublime-workspace
+tmp
+temp
+dist
+.idea
+.versions

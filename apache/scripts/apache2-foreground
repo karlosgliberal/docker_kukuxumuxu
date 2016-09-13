@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/apache2/apache2.pid
+
+### Available environment variables
+# DEBUG
+# TIMEZONE
+# MEMORY_LIMIT
+# UPLOAD_MAX_FILESIZE
+# POST_MAX_SIZE
+
+
+### Default set production
+# xdebug
+#cp /etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini
+
+# date.timezone
+if [[ $TIMEZONE != "" ]]; then
+  sed -i 's#;date.timezone\([[:space:]]*\)=\([[:space:]]*\)*#date.timezone\1=\2\"'"$TIMEZONE"'\"#g' /etc/php/7.0/apache2/php.ini
+else
+  TIMEZONE="Europe/Madrid"
+  sed -i 's#;date.timezone\([[:space:]]*\)=\([[:space:]]*\)*#date.timezone\1=\2\"'"$TIMEZONE"'\"#g' /etc/php/7.0/apache2/php.ini
+fi
+
+# memory_limit
+if [[ $MEMORY_LIMIT != "" ]]; then
+  sed -i 's/memory_limit = 128M/memory_limit = '$MEMORY_LIMIT'/' /etc/php/7.0/apache2/php.ini
+fi
+
+# upload_max_filesize
+if [[ $UPLOAD_MAX_FILESIZE != "" ]]; then
+  sed -i 's/upload_max_filesize = 2M/upload_max_filesize = '$UPLOAD_MAX_FILESIZE'/' /etc/php/7.0/apache2/php.ini
+fi
+
+# post_max_size
+if [[ $POST_MAX_SIZE != "" ]]; then
+  sed -i 's/post_max_size = 8M/post_max_size = '$POST_MAX_SIZE'/' /etc/php/7.0/apache2/php.ini
+fi
+
+# exec apache2 -DFOREGROUND
+source /etc/apache2/envvars && exec /usr/sbin/apache2 -DFOREGROUND
